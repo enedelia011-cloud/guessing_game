@@ -1,16 +1,17 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import random
 import json
 
 app = Flask(__name__)
+app.secret_key = "secret123"
 
-number = random.randint(1,10)
+number = random.randint(1, 10)
 attempts = 0
 
 
 def load_scores():
     try:
-        with open("players.json","r") as f:
+        with open("players.json", "r") as f:
             return json.load(f)
     except:
         return []
@@ -27,23 +28,23 @@ def save_score(name, difficulty, score):
 
     data = sorted(data, key=lambda x: x["score"])
 
-    with open("players.json","w") as f:
+    with open("players.json", "w") as f:
         json.dump(data[:10], f)
 
 
-@app.route("/", methods=["GET","POST"])
+@app.route("/", methods=["GET", "POST"])
 def index():
-
     global attempts, number
 
     message = ""
 
     if request.method == "POST":
 
-        guess = int(request.form.get("guess",0))
-        name = request.form.get("name")
-        difficulty = request.form.get("difficulty")
+        # Save player info in session
+        session['player'] = request.form.get("name")
+        session['difficulty'] = request.form.get("difficulty")
 
+        guess = int(request.form.get("guess", 0))
         attempts += 1
 
         if guess == number:
@@ -52,13 +53,12 @@ def index():
                 message="Correct!",
                 win=True,
                 attempts=attempts,
-                name=name,
-                difficulty=difficulty
+                name=session['player'],
+                difficulty=session['difficulty']
             )
 
         elif guess < number:
             message = "Too low"
-
         else:
             message = "Too high"
 
@@ -67,9 +67,8 @@ def index():
 
 @app.route("/save", methods=["POST"])
 def save():
-
-    name = request.form.get("name")
-    difficulty = request.form.get("difficulty")
+    name = session.get("player", "Unknown")
+    difficulty = session.get("difficulty", "easy")
     score = int(request.form.get("score"))
 
     save_score(name, difficulty, score)
@@ -79,20 +78,15 @@ def save():
 
 @app.route("/leaderboard")
 def leaderboard():
-
     players = load_scores()
-
     return render_template("leaderboard.html", players=players)
 
 
 @app.route("/restart")
 def restart():
-
     global number, attempts
-
-    number = random.randint(1,10)
+    number = random.randint(1, 10)
     attempts = 0
-
     return redirect("/")
 
 

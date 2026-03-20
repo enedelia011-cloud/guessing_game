@@ -1,1 +1,9 @@
-[]
+data = load_scores()
+
+player = session.get('player', 'Unknown')
+
+data.append({
+    "name": player,
+    "difficulty": session.get('difficulty', 'easy'),
+    "score": attempts
+})

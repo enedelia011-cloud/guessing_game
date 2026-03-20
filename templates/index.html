@@ -1,55 +1,15 @@
-<!DOCTYPE html>
-<html>
+<form action="/" method="post">
+    <input type="text" name="name" placeholder="Your name" required>
 
-<head>
-<title>Guessing Game</title>
-<link rel="stylesheet" href="/static/style.css">
-</head>
+    <select name="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
 
-<body>
+    <input type="number" name="guess" placeholder="Guess number" required>
 
-<h1>Number Guessing Game</h1>
-
-<form method="POST">
-
-<input type="text" name="name" placeholder="Player name" required>
-
-<select name="difficulty">
-<option value="easy">Easy</option>
-<option value="medium">Medium</option>
-<option value="hard">Hard</option>
-</select>
-
-<input type="number" name="guess" placeholder="Your guess">
-
-<button type="submit">Guess</button>
-
+    <button type="submit">Play</button>
 </form>
 
-<p>{{ message }}</p>
-
-<p>Attempts: {{ attempts }}</p>
-
-<a href="/restart">Restart Game</a>
-
-{% if win %}
-
-<form action="/save" method="POST">
-
-<input type="hidden" name="name" value="{{ name }}">
-<input type="hidden" name="difficulty" value="{{ difficulty }}">
-<input type="hidden" name="score" value="{{ attempts }}">
-
-<button type="submit">Save Score</button>
-
-</form>
-
-{% endif %}
-
-<br>
-
-<a href="/leaderboard">Leaderboard</a>
-
-</body>
-
-</html>
+<h2>Player: {{ session.player }}</h2>

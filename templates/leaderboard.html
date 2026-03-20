@@ -1,55 +1,25 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<title>Guessing Game</title>
-<link rel="stylesheet" href="/static/style.css">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
-<h1>Number Guessing Game</h1>
+<h1>Leaderboard</h1>
 
-<form method="POST">
-
-<input type="text" name="name" placeholder="Player name" required>
-
-<select name="difficulty">
-<option value="easy">Easy</option>
-<option value="medium">Medium</option>
-<option value="hard">Hard</option>
-</select>
-
-<input type="number" name="guess" placeholder="Your guess">
-
-<button type="submit">Guess</button>
-
-</form>
-
-<p>{{ message }}</p>
-
-<p>Attempts: {{ attempts }}</p>
-
-<a href="/restart">Restart Game</a>
-
-{% if win %}
-
-<form action="/save" method="POST">
-
-<input type="hidden" name="name" value="{{ name }}">
-<input type="hidden" name="difficulty" value="{{ difficulty }}">
-<input type="hidden" name="score" value="{{ attempts }}">
-
-<button type="submit">Save Score</button>
-
-</form>
-
+{% if players %}
+    {% for p in players %}
+        <p>{{ p.name }} - {{ p.score }} tries ({{ p.difficulty }})</p>
+    {% endfor %}
+{% else %}
+    <p>No scores yet</p>
 {% endif %}
 
 <br>
 
-<a href="/leaderboard">Leaderboard</a>
+<a href="/">Back to Game</a>
 
 </body>
-
 </html>
